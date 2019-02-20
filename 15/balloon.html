@@ -1,0 +1,27 @@
+<meta charset="utf-8">
+<p>🎈</p>
+
+<script>
+  // Your code here
+  let balloon = document.querySelector("p");
+  let balloonSize = 12;
+  function volume(event) {
+    if (event.key == "ArrowUp") {
+      balloonSize += 2;
+      balloon.style.fontSize = String(balloonSize) + "px";
+      if (balloonSize > 300) {
+        balloon.textContent = "💥";
+        window.removeEventListener("keydown", volume);
+      }
+    } else if (event.key == "ArrowDown") {
+      balloonSize -= 2;
+      balloon.style.fontSize = balloonSize.toString() + "px";
+      if (balloonSize < 0) {
+        balloon.textContent = "🌌";
+        balloon.style.fontSize = "300px";
+        window.removeEventListener("keydown", volume);
+      }
+    }
+  }
+  window.addEventListener("keydown", volume);
+</script>
