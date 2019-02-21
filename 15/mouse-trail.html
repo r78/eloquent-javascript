@@ -1,0 +1,32 @@
+<style>
+  .trail { /* className for the trail elements */
+    position: absolute;
+    height: 6px; width: 6px;
+    border-radius: 3px;
+    background: teal;
+  }
+  body {
+    height: 300px;
+  }
+  .dot {
+    height: 8px; width: 8px;
+    border-radius: 4px; /* rounds corners */
+    background: blue;
+    position: absolute;
+  }
+</style>
+
+<script>
+  // Your code here.
+  function makeWake(event) {
+    let dot = document.createElement("div");
+    dot.className = "dot";
+    dot.style.left = (event.pageX - 4) + "px";
+    dot.style.top = (event.pageY - 4) + "px";
+    document.body.appendChild(dot);
+    setTimeout(() => {
+      document.body.removeChild(dot);
+    }, 250);
+  }
+  window.addEventListener("mousemove", makeWake);
+</script>
