@@ -1,0 +1,39 @@
+<canvas width="600" height="300"></canvas>
+<script>
+  let cx = document.querySelector("canvas").getContext("2d");
+  let total = results
+    .reduce((sum, {count}) => sum + count, 0);
+  let currentAngle = -0.5 * Math.PI;
+  let centerX = 300, centerY = 150;
+  cx.font = " 14px Georgia";
+  // Add code to draw the slice labels in this loop.
+  for (let result of results) {
+    let sliceAngle = (result.count / total) * 2 * Math.PI;
+    cx.beginPath();
+    cx.arc(centerX, centerY, 100,
+           currentAngle, currentAngle + sliceAngle);
+    let middleAngle = currentAngle + 0.5 * sliceAngle;
+	let textX = Math.cos(middleAngle) * 120 + centerX;
+	let textY = Math.sin(middleAngle) * 120 + centerY;
+    
+    if (Math.sin(currentAngle) > 0) {
+		cx.textBaseline = "top";
+    } else {
+		cx.textBaseline = "bottom";
+    }
+
+    if (Math.cos(currentAngle) > 0) {
+    	cx.textAlign = "left";
+    } else {
+    	cx.textAlign = "right";
+    }
+    cx.fillStyle = result.color;
+    cx.fillText(result.name, textX, textY);
+    
+    currentAngle += sliceAngle;
+    cx.lineTo(centerX, centerY);
+    cx.fillStyle = result.color;    
+    cx.fill();
+    
+  }
+</script>
