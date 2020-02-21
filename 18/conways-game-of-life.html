@@ -1,0 +1,132 @@
+<div id="grid"></div>
+<button id="next">Next generation</button>
+<button id="run">Auto run</button>
+
+<script>
+  // Your code here.
+  const width = 20;
+  const height = 20;
+  const grid = document.querySelector("#grid");
+
+  let cells = [];
+  for (let i = 0; i < height * width; i++) {
+    let cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.id = "c" + i;
+    grid.appendChild(cb);
+    if (i % width == (width - 1)) {
+      let br = document.createElement("br");
+      grid.append(br);
+    }
+    cells.push(cb);
+  }
+
+  function getGrid() {
+    return cells.map(cb => cb.checked);
+  }
+
+  function getCheckBoxes(grid) {
+    grid.forEach((is_checked, i) => cells[i].checked = is_checked);
+  }
+
+  let button = document.querySelector("#next");
+  button.addEventListener("click", event => {
+    run();
+  });
+
+  getCheckBoxes(initialGrid());
+
+  function countNeighbours(grid, x) {
+    let count = 0;
+    for (let i = -1; i <= 1; i++) {
+      //upper neighbours
+      if (grid[x + i + height]) {
+        // leftmost cells have no right neighbour
+        if (x % width == 0) {
+          if (i > -1) {
+            count++;
+          }
+        // rightmost cells have no left neighbour
+        } else if (x % width == (width - 1)) {
+          if (i < 1) {
+            count++;
+          }
+        } else {
+          count++;
+        }
+      }
+      //same row neighbours
+      if (grid[x + i] && i != 0) {
+        if (x % width == 0) {
+          if (i > -1) {
+            count++;
+          }
+        } else if (x % width == (width - 1)) {
+          if (i < 1) {
+            count++;
+          }
+        } else {
+          count++;
+        }
+      }
+      //lower neighbours
+      if (grid[x + i - height]) {
+        if (x % width == 0) {
+          if (i > -1) {
+            count++;
+          }
+        } else if (x % width == (width - 1)) {
+          if (i < 1) {
+            count++;
+          }
+        } else {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  function nextGen(grid) {
+    let newGrid = [];
+    for (let i = 0; i < height * width; i++) {
+      let numNeighbours = countNeighbours(grid, i);
+      if (grid[i]) {
+        if ((numNeighbours < 2) || (numNeighbours > 3)) {
+          newGrid[i] = false;
+        } else {
+          newGrid[i] = true;
+        }
+      } else {
+        if (numNeighbours == 3) {
+          newGrid[i] = true;
+        }
+      }
+    }
+    return newGrid;
+  }
+
+  function run() {
+    getCheckBoxes(nextGen(getGrid()));
+  }
+
+  function initialGrid() {
+    let grid = [];
+    for (let i = 0; i < height * width; i++) {
+      grid.push(Math.random() > 0.5);
+    }
+    return grid;
+  }
+
+  let running = null;
+  document.querySelector("#run").addEventListener("click", () => {
+    if (running) {
+      clearInterval(running);
+      running = null;
+    } else {
+      running = setInterval(run, 500);
+    }
+  });
+
+
+</script>
