@@ -18,7 +18,7 @@
     </style>
     <script src="public.js"></script>
     <script>
-      function display(files) {
+      function listFiles(files) {
         let ext = RegExp('.*.html?$');
         let sel = document.getElementById('file');
         files.forEach(function(f) {
@@ -33,15 +33,28 @@
         });
       }
       async function loadFile(file) {
+        this.selected = true;
         let textarea = document.getElementById('editor');
         let text = await fetch('/' + file)
           .then(response => response.text())
           .then(result => result);
         textarea.value = text;
       }
+      function saveFile() {
+        let sel = document.getElementById('file');
+        let textarea = document.getElementById('editor');
+        for (let opt of sel) {
+          if (opt.selected == true) {
+            fetch('/' + opt.value, {
+              method: 'PUT',
+              body: textarea.value
+            });
+          }
+        }
+      }
       fetch('/')
         .then(response => response.text())
-        .then(result => display(result.split('\n')));
+        .then(result => listFiles(result.split('\n')));
     </script>
   </head>
   <body>
@@ -53,6 +66,7 @@
         <select name="file" id="file">
           <option>Please select a file:</option>
         </select>
+        <button onclick='saveFile()'>Save</button>
       </div>
     </div>
   </body>
