@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Simple editor</title>
+    <style>
+      div.click {
+        background-color: #ff0000;
+        display: block;
+        width: max-content;
+      }
+      body {
+        background-color: aliceblue;
+      }
+     .box {
+          display: flex;
+      }
+    </style>
+    <script src="public.js"></script>
+    <script>
+      function display(files) {
+        let ext = RegExp('.*.html?$');
+        let sel = document.getElementById('file');
+        files.forEach(function(f) {
+          if (ext.test(f)) {
+            let file = document.createElement("option");
+            let content = document.createTextNode(f);
+            file.value = f;
+            file.setAttribute('onclick', 'loadFile("'+f+'");');
+            file.appendChild(content);
+            sel.appendChild(file);
+          }
+        });
+      }
+      async function loadFile(file) {
+        let textarea = document.getElementById('editor');
+        let text = await fetch('/' + file)
+          .then(response => response.text())
+          .then(result => result);
+        textarea.value = text;
+      }
+      fetch('/')
+        .then(response => response.text())
+        .then(result => display(result.split('\n')));
+    </script>
+  </head>
+  <body>
+    <div class="box">
+      <div>
+        <textarea cols="100" rows="30" id="editor"></textarea>
+      </div>
+      <div>
+        <select name="file" id="file">
+          <option>Please select a file:</option>
+        </select>
+      </div>
+    </div>
+  </body>
+</html>
